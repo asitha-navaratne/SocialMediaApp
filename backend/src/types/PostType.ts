@@ -6,7 +6,8 @@ type PostType = {
   description: string;
   upvotes: number;
   downvotes: number;
-  comments: CommentType[];
+  comment_id: number;
+  comment_content: string;
 };
 
 export default PostType;

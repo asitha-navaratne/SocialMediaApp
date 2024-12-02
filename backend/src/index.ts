@@ -3,6 +3,8 @@ import sqlite3 from "sqlite3";
 import cors from "cors";
 import morgan from "morgan";
 
+import PostType from "./types/PostType";
+
 const PORT = 3000;
 
 const app = express();
@@ -63,6 +65,40 @@ app.get("/posts", (req: Request, res: Response) => {
   });
 });
 
+app.get("/post/:id", (req: Request, res: Response) => {
+  const postId = req.params.id;
+
+  const query = `SELECT posts.*, comments.id AS comment_id, comments.content AS comment_content 
+    FROM posts LEFT JOIN comments ON posts.id = comments.post_id WHERE posts.id=?`;
+
+  db.all(query, [postId], (err, rows: PostType[]) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+    }
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const post = {
+      id: rows[0].id,
+      title: rows[0].title,
+      description: rows[0].description,
+      comments: [] as Array<{ id: number; content: string }>,
+    };
+
+    rows.forEach((row) => {
+      if (row.comment_id) {
+        post.comments.push({
+          id: row.comment_id,
+          content: row.comment_content,
+        });
+      }
+    });
+
+    res.json(post);
+  });
+});
+
 app.post("/post", (req: Request, res: Response) => {
   const { title, description, upvotes, downvotes } = req.body;
 
@@ -77,7 +113,6 @@ app.post("/post", (req: Request, res: Response) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     } else {
-      // Respond with the newly created post data
       res.status(201).json({
         title,
         description,

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,12 +15,15 @@ import CheckIcon from "@mui/icons-material/Check";
 import styles from "./ViewPostModal.module.scss";
 
 import StateType from "../../types/StateType";
+import PostType from "../../types/PostType";
 
 import GetPostById from "../../services/GetPostById";
 
 import { modalActions } from "../../store/modal/modalSlice";
 
 const ViewPostModal = () => {
+  const [post, setPost] = useState<PostType>();
+
   const isModalOpen = useSelector(
     (state: StateType) => state.modal.isViewPostModalOpen
   );
@@ -30,7 +33,7 @@ const ViewPostModal = () => {
 
   useEffect(() => {
     if (openPost) {
-      GetPostById(openPost);
+      GetPostById(openPost).then((res) => setPost(res));
     }
   }, [openPost]);
 
@@ -52,51 +55,30 @@ const ViewPostModal = () => {
     >
       <Box className={styles["view-post-modal"]}>
         <Typography gutterBottom variant="h5" component="div" sx={{ mb: 2 }}>
-          Title
+          {post?.title}
         </Typography>
-        <Typography variant="body2">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos quae quia
-          sapiente, ipsum rerum ullam vero commodi aut aperiam aliquid dolores
-          voluptatem adipisci itaque enim eum aliquam, expedita illo libero!
+        <Typography variant="body2" sx={{ alignSelf: "flex-start" }}>
+          {post?.description}
         </Typography>
         <Box className={styles["view-post-modal__comment-section"]}>
           <Typography sx={{ fontWeight: "bold" }}>Comments</Typography>
           <Box className={styles["view-post-modal__comments-list"]}>
-            <Typography variant="body2" sx={{ mt: 2, mb: 1 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos quae
-              quia sapiente, ipsum rerum ullam vero commodi aut aperiam aliquid
-              dolores voluptatem adipisci itaque enim eum aliquam, expedita illo
-              libero!
-            </Typography>
-            <Divider />
-            <Typography variant="body2" sx={{ mt: 2, mb: 1 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos quae
-              quia sapiente, ipsum rerum ullam vero commodi aut aperiam aliquid
-              dolores voluptatem adipisci itaque enim eum aliquam, expedita illo
-              libero!
-            </Typography>
-            <Divider />
-            <Typography variant="body2" sx={{ mt: 2, mb: 1 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos quae
-              quia sapiente, ipsum rerum ullam vero commodi aut aperiam aliquid
-              dolores voluptatem adipisci itaque enim eum aliquam, expedita illo
-              libero!
-            </Typography>
-            <Divider />
-            <Typography variant="body2" sx={{ mt: 2, mb: 1 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos quae
-              quia sapiente, ipsum rerum ullam vero commodi aut aperiam aliquid
-              dolores voluptatem adipisci itaque enim eum aliquam, expedita illo
-              libero!
-            </Typography>
-            <Divider />
-            <Typography variant="body2" sx={{ mt: 2, mb: 1 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos quae
-              quia sapiente, ipsum rerum ullam vero commodi aut aperiam aliquid
-              dolores voluptatem adipisci itaque enim eum aliquam, expedita illo
-              libero!
-            </Typography>
-            <Divider />
+            {post?.comments && post.comments.length > 0 ? (
+              post?.comments.map((comment) => (
+                <Box key={comment.id}>
+                  <Typography variant="body2" sx={{ mt: 2, mb: 1 }}>
+                    {comment.content}
+                  </Typography>
+                  <Divider />
+                </Box>
+              ))
+            ) : (
+              <Typography
+                sx={{ alignSelf: "center", fontWeight: 100, fontSize: "80%" }}
+              >
+                No comments yet!
+              </Typography>
+            )}
           </Box>
         </Box>
         <Box className={styles["view-post-modal__actions"]}>
