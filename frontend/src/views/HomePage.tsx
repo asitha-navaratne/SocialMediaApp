@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
 
 import styles from "./HomePage.module.scss";
@@ -11,9 +11,15 @@ const HomePage = () => {
       <Button variant="contained" startIcon={<CreateIcon />}>
         Create Post
       </Button>
-      <Box className={styles["home-page__content-section"]}>
+      <Stack spacing={5} className={styles["home-page__content-section"]}>
         <ContentCard />
-      </Box>
+        <ContentCard />
+        <ContentCard />
+        <ContentCard />
+        <ContentCard />
+        <ContentCard />
+        <ContentCard />
+      </Stack>
     </Box>
   );
 };

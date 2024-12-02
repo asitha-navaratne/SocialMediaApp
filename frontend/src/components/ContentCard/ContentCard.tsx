@@ -11,9 +11,11 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import InsertCommentIcon from "@mui/icons-material/InsertComment";
 
+import styles from "./ContentCard.module.scss";
+
 const ContentCard = () => {
   return (
-    <Card>
+    <Card className={styles["content-card"]}>
       <CardActionArea>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
