@@ -16,6 +16,21 @@ const theme = createTheme({
         },
       },
     },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: "2.5rem",
+          padding: "1rem 2rem",
+        },
+      },
+    },
+    MuiCardActionArea: {
+      styleOverrides: {
+        root: {
+          borderRadius: "0.5rem",
+        },
+      },
+    },
   },
 });
 
