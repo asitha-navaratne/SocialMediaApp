@@ -1,3 +1,4 @@
+import { useDispatch } from "react-redux";
 import {
   Badge,
   Card,
@@ -13,10 +14,18 @@ import InsertCommentIcon from "@mui/icons-material/InsertComment";
 
 import styles from "./ContentCard.module.scss";
 
+import { modalActions } from "../../store/modal/modalSlice";
+
 const ContentCard = () => {
+  const dispatch = useDispatch();
+
+  const handleCardClick = function () {
+    dispatch(modalActions.openViewPostModal());
+  };
+
   return (
     <Card className={styles["content-card"]}>
-      <CardActionArea>
+      <CardActionArea onClick={handleCardClick}>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
             Title

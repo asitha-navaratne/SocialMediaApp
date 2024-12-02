@@ -1,0 +1,30 @@
+.view-post-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__comment-section {
+    margin-top: 2rem;
+    width: 100%;
+  }
+
+  &__comments-list {
+    max-height: 25vh;
+    overflow-y: auto;
+  }
+
+  &__actions {
+    width: 100%;
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+  }
+}
