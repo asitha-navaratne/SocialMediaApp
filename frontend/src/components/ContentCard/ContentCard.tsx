@@ -17,6 +17,9 @@ import styles from "./ContentCard.module.scss";
 
 import PropTypes from "./types/PropTypes";
 
+// import UpvotePost from "../../services/UpvotePost";
+// import DownvotePost from "../../services/DownvotePost";
+
 import { modalActions } from "../../store/modal/modalSlice";
 
 const ContentCard: FC<PropTypes> = (props) => {
@@ -24,6 +27,14 @@ const ContentCard: FC<PropTypes> = (props) => {
 
   const handleCardClick = function () {
     dispatch(modalActions.openViewPostModal(props.id));
+  };
+
+  const handleUpvoteClick = function () {
+    // UpvotePost(props.id);
+  };
+
+  const handleDownvoteClick = function () {
+    // DownvotePost(props.id);
   };
 
   return (
@@ -37,10 +48,10 @@ const ContentCard: FC<PropTypes> = (props) => {
         </CardContent>
       </CardActionArea>
       <CardActions sx={{ justifyContent: "flex-end" }}>
-        <IconButton>
+        <IconButton onClick={handleUpvoteClick}>
           <ArrowUpwardIcon />
         </IconButton>
-        <IconButton>
+        <IconButton onClick={handleDownvoteClick}>
           <ArrowDownwardIcon />
         </IconButton>
         <IconButton>

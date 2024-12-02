@@ -1,5 +1,7 @@
 # How to run in development
 
+1. Clone repository using git clone https://github.com/asitha-navaratne/SocialMediaApp.git
+
 ## Frontend
 
 1. cd frontend
