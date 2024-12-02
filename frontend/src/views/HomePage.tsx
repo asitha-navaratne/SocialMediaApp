@@ -1,15 +1,28 @@
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Box, Button, Stack } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
 
 import styles from "./HomePage.module.scss";
 
 import ContentCard from "../components/ContentCard/ContentCard";
 
+import PostType from "../types/PostType";
+
+import GetAllPosts from "../services/GetPosts";
+
 import { modalActions } from "../store/modal/modalSlice";
 
 const HomePage = () => {
+  const [postsList, setPostsList] = useState<PostType[]>([]);
+
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    GetAllPosts().then((res) => {
+      setPostsList(res);
+    });
+  }, []);
 
   const handleCreatePostClick = function () {
     dispatch(modalActions.openCreatePostModal());
@@ -25,13 +38,11 @@ const HomePage = () => {
         Create Post
       </Button>
       <Stack spacing={5} className={styles["home-page__content-section"]}>
-        <ContentCard />
-        <ContentCard />
-        <ContentCard />
-        <ContentCard />
-        <ContentCard />
-        <ContentCard />
-        <ContentCard />
+        {postsList.length > 0 ? (
+          postsList.map((post) => <ContentCard key={post.id} />)
+        ) : (
+          <Typography sx={{ fontWeight: 100 }}>No posts yet!</Typography>
+        )}
       </Stack>
     </Box>
   );
