@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { createPortal } from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -14,14 +15,32 @@ import styles from "./CreatePostModal.module.scss";
 
 import StateType from "../../types/StateType";
 
+import CreatePost from "../../services/CreatePost";
+
 import { modalActions } from "../../store/modal/modalSlice";
 
 const CreatePostModal = () => {
+  const titleRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLInputElement>(null);
+
   const isModalOpen = useSelector(
     (state: StateType) => state.modal.isCreatePostModalOpen
   );
 
   const dispatch = useDispatch();
+
+  const handleSaveClick = function () {
+    if (titleRef.current && descriptionRef.current) {
+      CreatePost({
+        id: 0,
+        title: titleRef.current.value,
+        description: titleRef.current.value,
+        upvotes: 1,
+        downvotes: 0,
+      });
+      dispatch(modalActions.closeCreatePostModal());
+    }
+  };
 
   const handleModalClose = function () {
     dispatch(modalActions.closeCreatePostModal());
@@ -43,16 +62,21 @@ const CreatePostModal = () => {
         <Typography gutterBottom variant="h5" component="div" sx={{ mb: 2 }}>
           Create Post
         </Typography>
-        <TextField id="title" label="Title" />
+        <TextField id="title" label="Title" inputRef={titleRef} />
         <TextField
           id="description"
           label="Description"
           multiline
           rows={4}
           sx={{ mt: 2 }}
+          inputRef={descriptionRef}
         />
         <Box className={styles["create-post-modal__actions"]}>
-          <Button variant="contained" startIcon={<CheckIcon />}>
+          <Button
+            variant="contained"
+            startIcon={<CheckIcon />}
+            onClick={handleSaveClick}
+          >
             Save Post
           </Button>
         </Box>

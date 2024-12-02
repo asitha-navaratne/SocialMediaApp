@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { useDispatch } from "react-redux";
 import {
   Badge,
@@ -14,13 +15,15 @@ import InsertCommentIcon from "@mui/icons-material/InsertComment";
 
 import styles from "./ContentCard.module.scss";
 
+import PropTypes from "./types/PropTypes";
+
 import { modalActions } from "../../store/modal/modalSlice";
 
-const ContentCard = () => {
+const ContentCard: FC<PropTypes> = (props) => {
   const dispatch = useDispatch();
 
   const handleCardClick = function () {
-    dispatch(modalActions.openViewPostModal());
+    dispatch(modalActions.openViewPostModal(props.id));
   };
 
   return (
@@ -28,14 +31,9 @@ const ContentCard = () => {
       <CardActionArea onClick={handleCardClick}>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
-            Title
+            {props.title}
           </Typography>
-          <Typography variant="body2">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos quae
-            quia sapiente, ipsum rerum ullam vero commodi aut aperiam aliquid
-            dolores voluptatem adipisci itaque enim eum aliquam, expedita illo
-            libero!
-          </Typography>
+          <Typography variant="body2">{props.description}</Typography>
         </CardContent>
       </CardActionArea>
       <CardActions sx={{ justifyContent: "flex-end" }}>

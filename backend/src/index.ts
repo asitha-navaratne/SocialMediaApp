@@ -16,8 +16,8 @@ const db = new sqlite3.Database("./database.sqlite", (err) => {
       CREATE TABLE IF NOT EXISTS posts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
-        description TEXT
-        upvotes INTEGER
+        description TEXT,
+        upvotes INTEGER,
         downvotes INTEGER
       );
     `,
@@ -33,7 +33,7 @@ const db = new sqlite3.Database("./database.sqlite", (err) => {
     db.run(
       `CREATE TABLE IF NOT EXISTS comments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        post_id INTEGER
+        post_id INTEGER,
         content TEXT NOT NULL,
         FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
       )`,
@@ -59,6 +59,29 @@ app.get("/posts", (req: Request, res: Response) => {
       res.status(500).json({ error: err.message });
     } else {
       res.json(rows);
+    }
+  });
+});
+
+app.post("/post", (req: Request, res: Response) => {
+  const { title, description, upvotes, downvotes } = req.body;
+
+  if (!title || !description) {
+    res.status(400).json({ error: "Title and description are required!" });
+  }
+
+  const stmt = db.prepare(
+    "INSERT INTO posts (title, description, upvotes, downvotes) VALUES (?, ?, ?, ?)"
+  );
+  stmt.run(title, description, upvotes, downvotes, (err: any) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    } else {
+      // Respond with the newly created post data
+      res.status(201).json({
+        title,
+        description,
+      });
     }
   });
 });
