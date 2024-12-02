@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -20,9 +20,12 @@ import PostType from "../../types/PostType";
 import GetPostById from "../../services/GetPostById";
 
 import { modalActions } from "../../store/modal/modalSlice";
+import CreateComment from "../../services/CreateComment";
 
 const ViewPostModal = () => {
   const [post, setPost] = useState<PostType>();
+
+  const commentRef = useRef<HTMLInputElement>(null);
 
   const isModalOpen = useSelector(
     (state: StateType) => state.modal.isViewPostModalOpen
@@ -36,6 +39,23 @@ const ViewPostModal = () => {
       GetPostById(openPost).then((res) => setPost(res));
     }
   }, [openPost]);
+
+  const handleAddComment = function () {
+    if (commentRef.current) {
+      CreateComment({
+        id: 0,
+        content: commentRef.current.value,
+        postId: openPost,
+      })
+        .then(() => {
+          return GetPostById(openPost);
+        })
+        .then((res) => {
+          commentRef.current!.value = "";
+          setPost(res);
+        });
+    }
+  };
 
   const handleModalClose = function () {
     dispatch(modalActions.closeViewPostModal());
@@ -65,12 +85,12 @@ const ViewPostModal = () => {
           <Box className={styles["view-post-modal__comments-list"]}>
             {post?.comments && post.comments.length > 0 ? (
               post?.comments.map((comment) => (
-                <Box key={comment.id}>
+                <Fragment key={comment.id}>
                   <Typography variant="body2" sx={{ mt: 2, mb: 1 }}>
                     {comment.content}
                   </Typography>
-                  <Divider />
-                </Box>
+                  <Divider sx={{ mb: 2 }} />
+                </Fragment>
               ))
             ) : (
               <Typography
@@ -83,9 +103,10 @@ const ViewPostModal = () => {
         </Box>
         <Box className={styles["view-post-modal__actions"]}>
           Add Comment
-          <TextField />
+          <TextField inputRef={commentRef} />
           <Box sx={{ alignSelf: "flex-end" }}>
             <Button
+              onClick={handleAddComment}
               variant="contained"
               startIcon={<CheckIcon />}
               sx={{ mt: 2 }}

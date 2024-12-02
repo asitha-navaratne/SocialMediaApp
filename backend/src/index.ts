@@ -121,6 +121,28 @@ app.post("/post", (req: Request, res: Response) => {
   });
 });
 
+app.post("/comment", (req: Request, res: Response) => {
+  const { postId, content } = req.body;
+
+  if (!postId || !content) {
+    res.status(400).json({ error: "Comment content is required!" });
+  }
+
+  const stmt = db.prepare(
+    "INSERT INTO comments (content, post_id) VALUES (?, ?)"
+  );
+  stmt.run(content, postId, (err: any) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    } else {
+      res.status(201).json({
+        content,
+        postId,
+      });
+    }
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Running on port ${PORT}`);
 });
