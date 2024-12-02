@@ -4,6 +4,7 @@ type PropTypes = {
   description: string;
   upvotes: number;
   downvotes: number;
+  commentCount: number;
 };
 
 export default PropTypes;

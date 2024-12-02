@@ -7,6 +7,7 @@ type PostType = {
   upvotes: number;
   downvotes: number;
   comments?: CommentType[];
+  commentCount?: number;
 };
 
 export default PostType;

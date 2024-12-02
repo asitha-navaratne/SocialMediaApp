@@ -17,8 +17,12 @@ import { modalActions } from "../store/modal/modalSlice";
 const HomePage = () => {
   const [postsList, setPostsList] = useState<PostType[]>([]);
 
-  const isModalOpen = useSelector(
+  const isCreatePostModalOpen = useSelector(
     (state: StateType) => state.modal.isCreatePostModalOpen
+  );
+
+  const isViewPostModalOpen = useSelector(
+    (state: StateType) => state.modal.isViewPostModalOpen
   );
 
   const dispatch = useDispatch();
@@ -27,7 +31,7 @@ const HomePage = () => {
     GetAllPosts().then((res) => {
       setPostsList(res);
     });
-  }, [isModalOpen]);
+  }, [isCreatePostModalOpen.valueOf, isViewPostModalOpen]);
 
   const handleCreatePostClick = function () {
     dispatch(modalActions.openCreatePostModal());
@@ -52,6 +56,7 @@ const HomePage = () => {
               description={post.description}
               upvotes={post.upvotes}
               downvotes={post.downvotes}
+              commentCount={post.commentCount ?? 0}
             />
           ))
         ) : (

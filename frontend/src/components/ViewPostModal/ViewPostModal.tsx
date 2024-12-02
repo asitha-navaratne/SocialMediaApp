@@ -41,7 +41,7 @@ const ViewPostModal = () => {
   }, [openPost]);
 
   const handleAddComment = function () {
-    if (commentRef.current) {
+    if (commentRef.current && commentRef.current.value !== "") {
       CreateComment({
         id: 0,
         content: commentRef.current.value,

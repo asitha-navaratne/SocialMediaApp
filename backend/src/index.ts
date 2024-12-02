@@ -35,9 +35,9 @@ const db = new sqlite3.Database("./database.sqlite", (err) => {
     db.run(
       `CREATE TABLE IF NOT EXISTS comments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        post_id INTEGER,
+        postId INTEGER,
         content TEXT NOT NULL,
-        FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+        FOREIGN KEY (postId) REFERENCES posts(id) ON DELETE CASCADE
       )`,
       (err) => {
         if (err) {
@@ -56,20 +56,24 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 app.get("/posts", (req: Request, res: Response) => {
-  db.all("SELECT * FROM posts", [], (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-    } else {
-      res.json(rows);
+  db.all(
+    "SELECT posts.*, COUNT(comments.id) AS commentCount FROM posts LEFT JOIN comments ON posts.id = comments.postId GROUP BY posts.id",
+    [],
+    (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.json(rows);
+      }
     }
-  });
+  );
 });
 
 app.get("/post/:id", (req: Request, res: Response) => {
   const postId = req.params.id;
 
-  const query = `SELECT posts.*, comments.id AS comment_id, comments.content AS comment_content 
-    FROM posts LEFT JOIN comments ON posts.id = comments.post_id WHERE posts.id=?`;
+  const query = `SELECT posts.*, comments.id AS commentId, comments.content AS commentContent 
+    FROM posts LEFT JOIN comments ON posts.id = comments.postId WHERE posts.id=?`;
 
   db.all(query, [postId], (err, rows: PostType[]) => {
     if (err) {
@@ -87,10 +91,10 @@ app.get("/post/:id", (req: Request, res: Response) => {
     };
 
     rows.forEach((row) => {
-      if (row.comment_id) {
+      if (row.commentId) {
         post.comments.push({
-          id: row.comment_id,
-          content: row.comment_content,
+          id: row.commentId,
+          content: row.commentContent,
         });
       }
     });
@@ -102,7 +106,7 @@ app.get("/post/:id", (req: Request, res: Response) => {
 app.post("/post", (req: Request, res: Response) => {
   const { title, description, upvotes, downvotes } = req.body;
 
-  if (!title || !description) {
+  if (!title) {
     res.status(400).json({ error: "Title and description are required!" });
   }
 
@@ -129,7 +133,7 @@ app.post("/comment", (req: Request, res: Response) => {
   }
 
   const stmt = db.prepare(
-    "INSERT INTO comments (content, post_id) VALUES (?, ?)"
+    "INSERT INTO comments (content, postId) VALUES (?, ?)"
   );
   stmt.run(content, postId, (err: any) => {
     if (err) {

@@ -44,7 +44,7 @@ const ContentCard: FC<PropTypes> = (props) => {
           <ArrowDownwardIcon />
         </IconButton>
         <IconButton>
-          <Badge badgeContent={5} max={99} color="primary">
+          <Badge badgeContent={props.commentCount} max={99} color="primary">
             <InsertCommentIcon />
           </Badge>
         </IconButton>

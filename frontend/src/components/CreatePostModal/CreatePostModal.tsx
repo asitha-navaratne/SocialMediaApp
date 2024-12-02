@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -23,6 +23,8 @@ const CreatePostModal = () => {
   const titleRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLInputElement>(null);
 
+  const [helperText, setHelperText] = useState<string>("");
+
   const isModalOpen = useSelector(
     (state: StateType) => state.modal.isCreatePostModalOpen
   );
@@ -31,14 +33,20 @@ const CreatePostModal = () => {
 
   const handleSaveClick = function () {
     if (titleRef.current && descriptionRef.current) {
-      CreatePost({
-        id: 0,
-        title: titleRef.current.value,
-        description: titleRef.current.value,
-        upvotes: 1,
-        downvotes: 0,
-      });
-      dispatch(modalActions.closeCreatePostModal());
+      if (titleRef.current.value !== "") {
+        setHelperText("");
+        CreatePost({
+          id: 0,
+          title: titleRef.current.value,
+          description: descriptionRef.current.value,
+          upvotes: 1,
+          downvotes: 0,
+        });
+
+        dispatch(modalActions.closeCreatePostModal());
+      } else {
+        setHelperText("Enter a title for your post!");
+      }
     }
   };
 
@@ -62,7 +70,13 @@ const CreatePostModal = () => {
         <Typography gutterBottom variant="h5" component="div" sx={{ mb: 2 }}>
           Create Post
         </Typography>
-        <TextField id="title" label="Title" inputRef={titleRef} />
+        <TextField
+          id="title"
+          label="Title"
+          inputRef={titleRef}
+          error={helperText !== ""}
+          helperText={helperText}
+        />
         <TextField
           id="description"
           label="Description"
