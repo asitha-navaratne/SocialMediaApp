@@ -1,0 +1,11 @@
+@use "../styles/variables";
+
+.navbar {
+  padding: 1em;
+  height: 8vh;
+  background-color: variables.$primary-color;
+  display: flex;
+  align-items: center;
+  font-weight: 100;
+  font-size: 120%;
+}
