@@ -1,7 +1,7 @@
 type ModalSliceType = {
   isCreatePostModalOpen: boolean;
   isViewPostModalOpen: boolean;
-  openModal: number;
+  openPost: number;
 };
 
 export default ModalSliceType;

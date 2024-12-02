@@ -15,12 +15,12 @@ const modalSlice = createSlice({
       state.isCreatePostModalOpen = false;
     },
     openViewPostModal(state, actions) {
-      state.isViewPostModalOpen = true;
       state.openPost = actions.payload;
+      state.isViewPostModalOpen = true;
     },
     closeViewPostModal(state) {
-      state.isViewPostModalOpen = false;
       state.openPost = 0;
+      state.isViewPostModalOpen = false;
     },
   },
 });

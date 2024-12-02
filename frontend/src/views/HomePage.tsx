@@ -10,7 +10,7 @@ import ContentCard from "../components/ContentCard/ContentCard";
 import PostType from "../types/PostType";
 import StateType from "../types/StateType";
 
-import GetAllPosts from "../services/GetPosts";
+import GetAllPosts from "../services/GetAllPosts";
 
 import { modalActions } from "../store/modal/modalSlice";
 

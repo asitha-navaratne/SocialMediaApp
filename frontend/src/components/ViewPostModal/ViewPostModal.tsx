@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,14 +16,23 @@ import styles from "./ViewPostModal.module.scss";
 
 import StateType from "../../types/StateType";
 
+import GetPostById from "../../services/GetPostById";
+
 import { modalActions } from "../../store/modal/modalSlice";
 
 const ViewPostModal = () => {
   const isModalOpen = useSelector(
     (state: StateType) => state.modal.isViewPostModalOpen
   );
+  const openPost = useSelector((state: StateType) => state.modal.openPost);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (openPost) {
+      GetPostById(openPost);
+    }
+  }, [openPost]);
 
   const handleModalClose = function () {
     dispatch(modalActions.closeViewPostModal());
